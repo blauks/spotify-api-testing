@@ -24,4 +24,4 @@ frontend/yarn-error.log*
 
 backend/brooksPerfectBackend/secrets.py
 
-backend/venv
+backend/venv/
