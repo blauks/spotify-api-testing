@@ -25,3 +25,5 @@ frontend/yarn-error.log*
 backend/brooksPerfectBackend/secrets.py
 
 backend/venv/
+
+**/__pycache__/
