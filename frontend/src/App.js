@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import links from './resources/staticData'
 import CurrPlaying from './components/CurrPlaying'
+import Me from './components/Me'
 
 function App() {
   const [showGodkjenn, changeShowGodkjenn] = useState(true)
@@ -17,6 +18,7 @@ function App() {
     return (
       <div className={"spotifyThings"}>
         <CurrPlaying />
+        <Me />
       </div>
     )
   }
