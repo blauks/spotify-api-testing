@@ -14,8 +14,10 @@ const Me = props => {
             }
         })
         const meData = await respProfile.json()
-
         changeProfileInfo(meData)
+        if (respProfile.status !== 200) {
+            Refresh()
+        }
     }
 
     useEffect(() => {

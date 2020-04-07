@@ -10,9 +10,11 @@ const CurrPlaying = props => {
         item: {
             album: {
                 images: ["bilde"],
+                artists: ["navn"]
             }
         }
     })
+    const [currPlayingInterval, changeCurrPlayingInterval] = useState("")
 
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -49,15 +51,18 @@ const CurrPlaying = props => {
                 localStorage.setItem("code", urlParams.get('code'))
                 changeAccessCode(localStorage.getItem("access_token"))
                 getCurrentlyPlaying()
+                setInterval(() => {
+                    getCurrentlyPlaying()
+                }, 3500);
             }
         }, [spotifyCode, urlParams, accessCode, playingNow])
 
     const modifyTrack = async props => {
-        let resp = await fetch("https://api.spotify.com/v1/me/player/" + props, {
-            method: 'POST',
+        let resp = await fetch("https://api.spotify.com/v1/me/player/" + props.endpoint, {
+            method: props.method,
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access_token")
-            }
+            },
         })
         if (resp.status === 401) {
             Refresh()
@@ -83,17 +88,28 @@ const CurrPlaying = props => {
         }
     }
 
-    return (
-        <div className={"displaySpotifyData"}>
-            <div className={"playingDiv"}>
-                <img alt="Sangbilde" src={playingNow.item.album.images[0].url} />
-            </div>
-            <div className={"buttons"}>
-                {accessCode !== "" && <button onClick={() => modifyTrack("previous")}>Prev</button>}
-                {accessCode !== "" && <button onClick={() => modifyTrack("next")}>Skip</button>}
-            </div>
-        </div >
-    )
+    if (accessCode !== "") {
+        return (
+            <div className={"displaySpotifyData"}>
+                <div className={"playingDiv"}>
+                    <img alt="Sangbilde" src={playingNow.item.album.images[0].url} />
+                    <p className={"songInfo"}>{playingNow.item.album.name} - {playingNow.item.album.artists.map(function (d, i) {
+                        return (i === 0 ? "" : ", ") + d.name
+                    })}</p>
+                </div>
+                <div className={"buttons"}>
+                    <button onClick={() => modifyTrack({ endpoint: "previous", method: "POST" })}>Prev</button>
+                    <button onClick={() => modifyTrack({ endpoint: playingNow.is_playing ? "pause" : "play", method: "PUT" })}>{playingNow.is_playing ? "Pause" : "Resume"}</button>
+                    <button onClick={() => modifyTrack({ endpoint: "next", method: "POST" })}>Skip</button>
+                </div>
+            </div >
+        )
+    }
+    else {
+        return (
+            <div></div>
+        )
+    }
 }
 
 export default CurrPlaying
